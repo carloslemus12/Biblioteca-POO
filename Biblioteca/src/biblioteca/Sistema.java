@@ -34,6 +34,10 @@ public class Sistema extends javax.swing.JFrame {
         temasMenu = new javax.swing.JMenu();
         librosMenu = new javax.swing.JMenu();
         usuarioMenu = new javax.swing.JMenu();
+        OpcionesMenu = new javax.swing.JMenu();
+        claveMenuItem = new javax.swing.JMenuItem();
+        informacionMenuItem = new javax.swing.JMenuItem();
+        CerrarMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,6 +55,19 @@ public class Sistema extends javax.swing.JFrame {
 
         usuarioMenu.setText("Usuarios");
         menuBar.add(usuarioMenu);
+
+        OpcionesMenu.setText("Opciones");
+
+        claveMenuItem.setText("Cambiar clave");
+        OpcionesMenu.add(claveMenuItem);
+
+        informacionMenuItem.setText("Cambiar informacion");
+        OpcionesMenu.add(informacionMenuItem);
+
+        CerrarMenuItem.setText("Cerrar seccion");
+        OpcionesMenu.add(CerrarMenuItem);
+
+        menuBar.add(OpcionesMenu);
 
         setJMenuBar(menuBar);
 
@@ -104,9 +121,13 @@ public class Sistema extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem CerrarMenuItem;
+    private javax.swing.JMenu OpcionesMenu;
     private javax.swing.JMenu autoresMenu;
     private javax.swing.JMenu categoriasMenu;
+    private javax.swing.JMenuItem claveMenuItem;
     private javax.swing.JDesktopPane desktopPane;
+    private javax.swing.JMenuItem informacionMenuItem;
     private javax.swing.JMenu librosMenu;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu temasMenu;

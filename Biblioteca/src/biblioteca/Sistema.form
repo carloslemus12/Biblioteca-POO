@@ -29,6 +29,28 @@
             <Property name="text" type="java.lang.String" value="Usuarios"/>
           </Properties>
         </Menu>
+        <Menu class="javax.swing.JMenu" name="OpcionesMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Opciones"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="claveMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cambiar clave"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="informacionMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cambiar informacion"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="CerrarMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cerrar seccion"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
       </SubComponents>
     </Menu>
   </NonVisualComponents>
