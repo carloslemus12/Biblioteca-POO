@@ -1,0 +1,18 @@
+# Biblioteca POO
+
+## Modulos:
+1. Autores
+2. Categorias
+3. Temas
+4. Libros
+5. Usuarios
+
+### cosas a tomar en cuenta
+1. Existen cinco paquetes donde estaran todo lo relacionado a los frame internos del proyecto
+2. Si crean sus propias clases agregenla en un paquete con sus nombre esto para tenerlo mas ordenado
+3. Todos los modulos deben permitir crear, eliminar, modificar y leer y para eliminar, guardar y modificar se debe de asegurar
+4. Los que se encargen de la categoria, temas y autores deben de asegurarse que no poseean datos relacionado e lo contrario que muestre el error
+
+>Hay una clase conexion y tablaModelo diseñadas para faciltar las conexiones, sin embargo si no la quieren usar esta bien
+
+# Se debe de terminar a mas tardar al finalizar semana santa!!
