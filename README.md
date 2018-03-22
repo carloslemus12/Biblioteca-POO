@@ -1,11 +1,11 @@
 # Biblioteca POO
 
 ## Modulos:
-1. Autores
-2. Categorias
-3. Temas
-4. Libros
-5. Usuarios
+* Emerson: Autor e imagen libro
+* Alexander: categoria e inicio de sesion
+* Marco: tema y cambio de informacion de los usuarios
+* Josue: Usuario y cambio de clave
+* Lemus: Libros
 
 ### cosas a tomar en cuenta
 1. Existen cinco paquetes donde estaran todo lo relacionado a los frame internos del proyecto
