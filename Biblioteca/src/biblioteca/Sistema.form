@@ -30,7 +30,7 @@
                   <KeyStroke key="Ctrl+L"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/biblioteca/libros/img/cancel.png"/>
+                  <Image iconType="3" name="/biblioteca/libros/img/books.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Nuevo libro"/>
               </Properties>
@@ -72,6 +72,8 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="title" type="java.lang.String" value="Control de biblioteca"/>
+    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>

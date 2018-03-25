@@ -64,6 +64,7 @@ public class JIfrmLibro extends javax.swing.JInternalFrame {
         lblNotas = new javax.swing.JLabel();
 
         setClosable(true);
+        setIconifiable(true);
         setTitle("Nuevo libro");
 
         pnlOpciones.setBackground(new java.awt.Color(179, 57, 57));

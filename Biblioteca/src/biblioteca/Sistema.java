@@ -18,6 +18,9 @@ public class Sistema extends javax.swing.JFrame {
      */
     public Sistema() {
         initComponents();
+        
+        this.setExtendedState(MAXIMIZED_BOTH);
+        
     }
 
     /**
@@ -43,6 +46,8 @@ public class Sistema extends javax.swing.JFrame {
         CerrarMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Control de biblioteca");
+        setResizable(false);
 
         autoresMenu.setText("Autores");
         menuBar.add(autoresMenu);
@@ -56,7 +61,7 @@ public class Sistema extends javax.swing.JFrame {
         librosMenu.setText("Libros");
 
         nuevoLibroItemMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
-        nuevoLibroItemMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/biblioteca/libros/img/cancel.png"))); // NOI18N
+        nuevoLibroItemMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/biblioteca/libros/img/books.png"))); // NOI18N
         nuevoLibroItemMenu.setText("Nuevo libro");
         nuevoLibroItemMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
