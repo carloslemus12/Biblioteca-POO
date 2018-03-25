@@ -5,6 +5,8 @@
  */
 package biblioteca;
 
+import biblioteca.libros.JFrmLibro;
+
 /**
  *
  * @author MekakuZero
@@ -33,6 +35,7 @@ public class Sistema extends javax.swing.JFrame {
         categoriasMenu = new javax.swing.JMenu();
         temasMenu = new javax.swing.JMenu();
         librosMenu = new javax.swing.JMenu();
+        nuevoLibroItemMenu = new javax.swing.JMenuItem();
         usuarioMenu = new javax.swing.JMenu();
         OpcionesMenu = new javax.swing.JMenu();
         claveMenuItem = new javax.swing.JMenuItem();
@@ -51,6 +54,17 @@ public class Sistema extends javax.swing.JFrame {
         menuBar.add(temasMenu);
 
         librosMenu.setText("Libros");
+
+        nuevoLibroItemMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        nuevoLibroItemMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/biblioteca/libros/img/cancel.png"))); // NOI18N
+        nuevoLibroItemMenu.setText("Nuevo libro");
+        nuevoLibroItemMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevoLibroItemMenuActionPerformed(evt);
+            }
+        });
+        librosMenu.add(nuevoLibroItemMenu);
+
         menuBar.add(librosMenu);
 
         usuarioMenu.setText("Usuarios");
@@ -84,6 +98,13 @@ public class Sistema extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void nuevoLibroItemMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoLibroItemMenuActionPerformed
+        // TODO add your handling code here:
+        JFrmLibro libro = new JFrmLibro();
+        this.desktopPane.add(libro);
+        libro.show();
+    }//GEN-LAST:event_nuevoLibroItemMenuActionPerformed
 
     /**
      * @param args the command line arguments
@@ -130,6 +151,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JMenuItem informacionMenuItem;
     private javax.swing.JMenu librosMenu;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem nuevoLibroItemMenu;
     private javax.swing.JMenu temasMenu;
     private javax.swing.JMenu usuarioMenu;
     // End of variables declaration//GEN-END:variables
