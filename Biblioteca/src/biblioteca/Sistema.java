@@ -5,7 +5,7 @@
  */
 package biblioteca;
 
-import biblioteca.libros.JFrmLibro;
+import biblioteca.libros.JIfrmLibro;
 
 /**
  *
@@ -101,7 +101,7 @@ public class Sistema extends javax.swing.JFrame {
 
     private void nuevoLibroItemMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoLibroItemMenuActionPerformed
         // TODO add your handling code here:
-        JFrmLibro libro = new JFrmLibro();
+        JIfrmLibro libro = new JIfrmLibro();
         this.desktopPane.add(libro);
         libro.show();
     }//GEN-LAST:event_nuevoLibroItemMenuActionPerformed
