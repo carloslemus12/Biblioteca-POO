@@ -24,6 +24,25 @@ public abstract class Conexion {
     private static String usuario = "root";
     private static String clave = "";
     
+    public static Conexion obtenerConexion(){
+        return new Conexion(){
+            @Override
+            public boolean guardar() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public boolean eliminar() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public boolean actualizar() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
+    }
+    
     // Creamos la conexion
     public void conectar(){
         try {
@@ -47,6 +66,14 @@ public abstract class Conexion {
     public void agregarParametro(int posicion, int valor){
         try{
             this.sentencia.setInt(posicion, valor);
+        } catch(Exception error){
+            System.out.println("Error parametro: " + error.getMessage());
+        }
+    }
+    
+    public void agregarParametroNull(int posicion){
+        try{
+            this.sentencia.setObject(posicion, null);
         } catch(Exception error){
             System.out.println("Error parametro: " + error.getMessage());
         }

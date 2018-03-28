@@ -5,6 +5,21 @@
  */
 package biblioteca.libros;
 
+import biblioteca.Sistema;
+import biblioteca.modelos.Autores;
+import biblioteca.modelos.Categorias;
+import biblioteca.modelos.Libros;
+import biblioteca.modelos.Notas;
+import biblioteca.modelos.Temas;
+import java.util.ArrayList;
+import static java.util.Collections.list;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import mojica.alexander.mvc.Item;
+import mojica.alexander.mvc.MVCItemCellRenderer;
+import mojica.alexander.utilidades.Mensaje;
+
 /**
  *
  * @author MekakuZero
@@ -14,15 +29,96 @@ public class JIfrmLibro extends javax.swing.JInternalFrame {
     /**
      * Creates new form JIfrmLibro
      */
+    private DefaultListModel modelo_lista;
+    private DefaultListModel modelo_temas;
+    private List<Temas> temas_usados;
+    
+    // Informacion del libro
+    Libros libro;
+    
+    public JIfrmLibro(Libros libro) {
+        initComponents();
+        this.libro = libro;
+        // Obtenemos los datos de las categorias
+        restetItemCategoria();
+        resetItemAutor();
+        this.btnAccion.setText("Modificar");
+        this.setTitle("Modificar libro");
+        limpiar();
+    }
+    
+    // Constructor
     public JIfrmLibro() {
         initComponents();
+        libro = Libros.getDefault();
+        // Obtenemos los datos de las categorias
+        restetItemCategoria();
+        resetItemAutor();
+        this.btnAccion.setText("Guardar");
+        this.setTitle("Nuevo libro");
         limpiar();
     }
 
+    // Lista de categoriasn ////////////////////////////////////////////////////
+    private void restetItemCategoria(){
+        List<Categorias> categorias = Categorias.obtenerTodasCategorias();
+        
+        this.cmbCategoria.removeAllItems();
+        
+        for(Categorias categoria : categorias)
+            this.cmbCategoria.addItem(categoria);
+        
+        this.cmbCategoria.setRenderer(new MVCItemCellRenderer());
+    }
+    // Lista de autores ////////////////////////////////////////////////////////
+    private void resetItemAutor(){
+        List<Autores> autores = Autores.obtenerTodosAutores();
+        
+        this.cmbAutor.removeAllItems();
+        
+        this.cmbAutor.addItem(Autores.getDefault("Anonimo"));
+        
+        for(Autores autor : autores)
+            this.cmbAutor.addItem(autor);
+        
+        this.cmbAutor.setRenderer(new MVCItemCellRenderer());
+    }
+    
+    // Limpiar los datos ///////////////////////////////////////////////////////
     public void limpiar(){
+        // Ocultamos los errores
         this.lblErrorTitulo.setVisible(false);
         this.lblErrorImprenta.setVisible(false);
         this.lblErrorEdicion.setVisible(false);
+        this.lblErrorIsbn.setVisible(false);
+        // Restauramos el valor por defecto 
+        this.txtTitulo.setText(this.libro.getTitulo());
+        this.txtEdicion.setText(this.libro.getEdicion());
+        this.txtImprenta.setText(this.libro.getImprenta());
+        this.txtDescripcion.setText(this.libro.getDescripcion());
+        this.txtIsbn.setText(this.libro.getIsbn());
+        this.libro.getCategoria().seleccionarItem(cmbCategoria);
+        this.libro.getAutor().seleccionarItem(cmbAutor);
+        //this.cmbCategoria.setSelectedIndex(0);
+        // Formateamos la lista de notas
+        this.modelo_lista = new DefaultListModel();
+        listNotas.setModel(this.modelo_lista);
+        // Formateamos la lista de los temas
+        this.temas_usados = new ArrayList<>();
+        this.modelo_temas = new DefaultListModel();
+        this.listTemas.setModel(this.modelo_temas);
+        // Obtenemos el valor por defecto
+        this.btnEliminar.setVisible(this.btnAccion.getText().equals("Modificar"));
+        if (this.btnEliminar.isVisible()) {
+            // Obtenemos todos las notas
+            for(Notas nota : libro.getNotas())
+                this.modelo_lista.addElement(nota);
+            // Obtenemos todos los temas
+            for(Temas tema : libro.getTemas()) {
+                this.temas_usados.add(tema);
+                this.modelo_temas.addElement(tema);
+            }
+        }
     }
     
     /**
@@ -37,6 +133,7 @@ public class JIfrmLibro extends javax.swing.JInternalFrame {
         pnlOpciones = new javax.swing.JPanel();
         btnLimpiar = new javax.swing.JButton();
         btnAccion = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         pnlDatos = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         lblImg = new javax.swing.JLabel();
@@ -49,19 +146,28 @@ public class JIfrmLibro extends javax.swing.JInternalFrame {
         lblTitulo = new javax.swing.JLabel();
         lblEdcion = new javax.swing.JLabel();
         lblImprenta = new javax.swing.JLabel();
+        lblIsbn = new javax.swing.JLabel();
+        lblErrorIsbn = new javax.swing.JLabel();
+        txtIsbn = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
-        lblAutor = new javax.swing.JLabel();
-        cmbAutor = new javax.swing.JComboBox<>();
         lblCategoria = new javax.swing.JLabel();
-        cmbCategoria = new javax.swing.JComboBox<>();
+        cmbCategoria = new javax.swing.JComboBox();
         lblDescripcion = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescripcion = new javax.swing.JTextPane();
+        cmbAutor = new javax.swing.JComboBox();
+        lblAutor = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        btnNuevaNota = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        lisNotas = new javax.swing.JList<>();
+        jPanel5 = new javax.swing.JPanel();
         lblNotas = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        listNotas = new javax.swing.JList<>();
+        btnAddNota = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        listTemas = new javax.swing.JList<>();
+        lblTemas = new javax.swing.JLabel();
+        btnAddTema = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -71,6 +177,11 @@ public class JIfrmLibro extends javax.swing.JInternalFrame {
         pnlOpciones.setPreferredSize(new java.awt.Dimension(345, 40));
 
         btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
         pnlOpciones.add(btnLimpiar);
 
         btnAccion.setText("Guardar");
@@ -81,146 +192,297 @@ public class JIfrmLibro extends javax.swing.JInternalFrame {
         });
         pnlOpciones.add(btnAccion);
 
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        pnlOpciones.add(btnEliminar);
+
         getContentPane().add(pnlOpciones, java.awt.BorderLayout.PAGE_END);
 
-        pnlDatos.setLayout(new java.awt.GridLayout(3, 4));
+        pnlDatos.setLayout(new java.awt.GridLayout(3, 1));
 
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel3.setAutoscrolls(true);
+        jPanel3.setMaximumSize(new java.awt.Dimension(454, 100));
+        jPanel3.setMinimumSize(new java.awt.Dimension(454, 100));
+        jPanel3.setPreferredSize(new java.awt.Dimension(454, 100));
 
         lblImg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblImg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/biblioteca/libros/img/photo-camera.png"))); // NOI18N
         lblImg.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         lblImg.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         lblImg.setOpaque(true);
-        jPanel3.add(lblImg, new org.netbeans.lib.awtextra.AbsoluteConstraints(266, 11, 134, 137));
 
         lblErrorImprenta.setForeground(new java.awt.Color(255, 0, 0));
-        lblErrorImprenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/biblioteca/libros/img/cancel.png"))); // NOI18N
         lblErrorImprenta.setText("Error.");
-        jPanel3.add(lblErrorImprenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 132, 192, -1));
-        jPanel3.add(txtImprenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 106, 192, -1));
+
+        txtImprenta.setMaximumSize(new java.awt.Dimension(6, 20));
+        txtImprenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtImprentaActionPerformed(evt);
+            }
+        });
 
         lblErrorEdicion.setForeground(new java.awt.Color(255, 0, 0));
-        lblErrorEdicion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/biblioteca/libros/img/cancel.png"))); // NOI18N
         lblErrorEdicion.setText("Error.");
-        jPanel3.add(lblErrorEdicion, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 84, 192, -1));
-        jPanel3.add(txtEdicion, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 59, 192, -1));
+
+        txtEdicion.setMaximumSize(new java.awt.Dimension(6, 20));
+        txtEdicion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEdicionActionPerformed(evt);
+            }
+        });
 
         lblErrorTitulo.setForeground(new java.awt.Color(255, 0, 0));
-        lblErrorTitulo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/biblioteca/libros/img/cancel.png"))); // NOI18N
         lblErrorTitulo.setText("Error.");
-        jPanel3.add(lblErrorTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 32, 192, -1));
 
         txtTitulo.setName(""); // NOI18N
-        jPanel3.add(txtTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(68, 11, 192, -1));
 
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblTitulo.setText("Titulo:");
-        jPanel3.add(lblTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 14, 52, -1));
 
+        lblEdcion.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblEdcion.setText("Edicion:");
-        jPanel3.add(lblEdcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 62, 52, -1));
 
+        lblImprenta.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblImprenta.setText("Imprenta:");
-        jPanel3.add(lblImprenta, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 106, 52, -1));
+
+        lblIsbn.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblIsbn.setText("ISBN:");
+
+        lblErrorIsbn.setForeground(new java.awt.Color(255, 0, 0));
+        lblErrorIsbn.setText("Error.");
+
+        txtIsbn.setMaximumSize(new java.awt.Dimension(6, 20));
+        txtIsbn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIsbnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, 0)
+                        .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 57, Short.MAX_VALUE)
+                        .addComponent(txtEdicion, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(lblImprenta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, 0)
+                        .addComponent(txtImprenta, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(lblIsbn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, 0)
+                        .addComponent(txtIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblErrorTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblErrorEdicion, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblErrorImprenta, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblEdcion, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblErrorIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblImg, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblTitulo))
+                        .addGap(0, 0, 0)
+                        .addComponent(lblErrorTitulo)
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblEdcion)
+                            .addComponent(txtEdicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, 0)
+                        .addComponent(lblErrorEdicion)
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblImprenta)
+                            .addComponent(txtImprenta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, 0)
+                        .addComponent(lblErrorImprenta)
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblIsbn)
+                            .addComponent(txtIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, 0)
+                        .addComponent(lblErrorIsbn)
+                        .addGap(0, 43, Short.MAX_VALUE))
+                    .addComponent(lblImg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
 
         pnlDatos.add(jPanel3);
 
-        lblAutor.setText("Autor:");
-
-        cmbAutor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         lblCategoria.setText("Categoria:");
 
-        cmbCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbCategoria.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lblDescripcion.setText("Descripcion:");
 
         jScrollPane1.setViewportView(txtDescripcion);
 
+        cmbAutor.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        lblAutor.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblAutor.setText("Autor:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 410, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDescripcion)
+                    .addComponent(lblCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cmbAutor, 0, 266, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblAutor)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(lblAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(162, 162, 162)
-                            .addComponent(lblCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(cmbAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(lblDescripcion)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addContainerGap()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 156, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCategoria)
+                    .addComponent(lblAutor))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblDescripcion)
+                .addContainerGap(124, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblAutor)
-                        .addComponent(lblCategoria))
-                    .addGap(6, 6, 6)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(cmbAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(6, 6, 6)
-                    .addComponent(lblDescripcion)
-                    .addGap(6, 6, 6)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(84, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(22, 22, 22)))
         );
 
         pnlDatos.add(jPanel1);
 
-        btnNuevaNota.setText("Añadir nota");
-
-        lisNotas.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(lisNotas);
+        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
 
         lblNotas.setText("Notas:");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        listNotas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listNotasMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(listNotas);
+
+        btnAddNota.setText("Añadir nota");
+        btnAddNota.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddNotaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnNuevaNota, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(290, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblNotas)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(122, Short.MAX_VALUE)
-                .addComponent(btnNuevaNota)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblNotas)
+                            .addComponent(btnAddNota))
+                        .addGap(0, 132, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(0, 2, Short.MAX_VALUE)
-                    .addComponent(lblNotas)
-                    .addGap(6, 6, 6)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 35, Short.MAX_VALUE)))
         );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblNotas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAddNota)
+                .addGap(16, 16, 16))
+        );
+
+        jPanel2.add(jPanel5);
+
+        listTemas.setName(""); // NOI18N
+        listTemas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listTemasMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(listTemas);
+
+        lblTemas.setText("Temas:");
+
+        btnAddTema.setText("Añadir Tema");
+        btnAddTema.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddTemaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTemas)
+                            .addComponent(btnAddTema))
+                        .addGap(0, 128, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTemas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddTema)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        jPanel2.add(jPanel4);
 
         pnlDatos.add(jPanel2);
 
@@ -230,38 +492,241 @@ public class JIfrmLibro extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccionActionPerformed
-        // TODO add your handling code here:
+        // Obtenemos los datos del libro
+        String titulo = this.txtTitulo.getText().trim();
+        String imprenta = this.txtImprenta.getText().trim();
+        String edicion = this.txtEdicion.getText().trim();
+        String descripcion = this.txtDescripcion.getText().trim();
+        String isbn = this.txtIsbn.getText().trim();
+        
+        // Validamos los campos
+        if (
+                Libros.validarTitulo(titulo, this.lblErrorTitulo) &
+                Libros.validarEdicion(edicion, this.lblErrorEdicion) &
+                Libros.validarImprenta(imprenta, this.lblErrorImprenta) &
+                Libros.validarISBN(isbn, this.lblErrorIsbn)
+            ) {
+            
+            // Cremao el modelo del libro
+            Libros libro = new Libros();
+            
+            libro.setTitulo(titulo);
+            libro.setEdicion(edicion);
+            libro.setImprenta(imprenta);
+            libro.setDescripcion(descripcion);
+            libro.setIsbn(isbn);
+
+            libro.setCategoria((Categorias)this.cmbCategoria.getSelectedItem());
+            
+            if (this.cmbAutor.getSelectedIndex() > 0) 
+                libro.setAutor((Autores)this.cmbAutor.getSelectedItem());
+            
+            // Primero guardamos el valor del nuevo libro
+            int id_libro = 0; 
+            
+            if (!this.btnEliminar.isVisible())
+                id_libro = libro.guardarObtenerId();
+            else {
+                libro.setId(this.libro.getId());
+                if (libro.actualizar()) 
+                    id_libro = libro.getId();
+            }
+            
+            if (id_libro > 0) {
+                guardarNotaTema(id_libro);
+                
+                Mensaje.Informacion("El libro ha sido " + ((this.btnEliminar.isVisible())? "actualizado" : "asignado") + " con exito", title);
+                
+                JIfrmListaLibros.ActualizarTabla();
+                
+                libro.setId(id_libro);
+                this.libro = libro;
+                this.dispose();
+                
+            } else
+                Mensaje.Error("Problemas con el " + ((this.btnEliminar.isVisible())? "modificado" : "guardado") + " del libro", title);
+            
+        } else
+            Mensaje.Error("Campos invalidos", title);
     }//GEN-LAST:event_btnAccionActionPerformed
 
+    public void guardarNotaTema(int id){
+        // Primeros obtenemos todas las notas
+        for (int i = 0; i < this.modelo_lista.size(); i++) {
+            Notas nota = (Notas)this.modelo_lista.getElementAt(i);
+            if (!nota.isExist())
+                nota.guardar(id);
+        }
+
+        for (int i = 0; i < this.modelo_temas.size(); i++) {
+            Temas tema = (Temas)this.modelo_temas.getElementAt(i);
+            if (!tema.isExist(id))
+                tema.guardar(id);
+        }
+    }
+    
+    private void txtImprentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtImprentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtImprentaActionPerformed
+
+    private void txtEdicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEdicionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEdicionActionPerformed
+
+    private void btnAddNotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddNotaActionPerformed
+        // Obtener notas
+        String nota = JOptionPane.showInputDialog(null, "", "Añadir nota", JOptionPane.INFORMATION_MESSAGE);
+        
+        if (nota != null && !nota.isEmpty())
+            this.modelo_lista.addElement(new Notas(nota));
+        else
+            Mensaje.Error("Debe ingresar algun valor", this.title);
+    }//GEN-LAST:event_btnAddNotaActionPerformed
+
+    private void listNotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listNotasMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() > 1) {
+            if (this.modelo_lista.size() > 0) {
+                int estado = JOptionPane.showConfirmDialog(null, "¿Desea eliminar la nota?", "Eliminar nota", JOptionPane.YES_NO_OPTION);
+
+                if (estado == JOptionPane.YES_OPTION) {
+                    int fila = this.listNotas.getSelectedIndex();
+
+                    if (fila >= 0){
+                        Notas nota = (Notas)this.modelo_lista.getElementAt(fila);
+
+                        // Si la nota posee una relacion con los libros
+                        if (nota.isExist()) {
+                            if (JOptionPane.showConfirmDialog(null, "¿Estar seguro de eliminar la nota?", "Eliminar nota", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                                if (!nota.eliminar())
+                                    Mensaje.Error("No se ha podido eliminar la nota", "Eliminar nota");
+                                else
+                                    this.modelo_lista.remove(fila);
+                            }
+                        }
+                        else
+                            this.modelo_lista.remove(fila);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_listNotasMouseClicked
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+        int estado = JOptionPane.showConfirmDialog(null, "¿Desea limpiar toda la informacion?", this.title, JOptionPane.YES_NO_OPTION);
+        
+        if (estado == JOptionPane.YES_OPTION) 
+            limpiar();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnAddTemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTemaActionPerformed
+        // TODO add your handling code here:
+        if (Temas.existenTemas()) {
+            SeleccionarTema st = new SeleccionarTema(null, true, temas_usados);
+            st.setVisible(true);
+            
+            this.modelo_temas = new DefaultListModel();
+            
+            for (Temas tema: this.temas_usados)
+                this.modelo_temas.addElement(tema);
+            
+            this.listTemas.setModel(modelo_temas);
+        } else
+            Mensaje.Error("No existen temas para enlazar", title);
+    }//GEN-LAST:event_btnAddTemaActionPerformed
+
+    private void listTemasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listTemasMouseClicked
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        if (evt.getClickCount() > 1) {
+            if (this.modelo_temas.size() > 0) {
+                int estado = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el tema?", "Eliminar tema", JOptionPane.YES_NO_OPTION);
+
+                if (estado == JOptionPane.YES_OPTION) {
+                    int fila = this.listTemas.getSelectedIndex();
+
+                    if (fila >= 0){
+                        Temas tema = (Temas)this.modelo_temas.getElementAt(fila);
+
+                        // En caso que ya exista
+                        if (this.btnEliminar.isVisible() && tema.isExist(this.libro.getId())) {
+                            if (JOptionPane.showConfirmDialog(null, "¿Esta seguro de eliminar el tema?", "Eliminar tema", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                                if (!tema.eliminarRelacion())
+                                    Mensaje.Error("No se ha podido eliminar la tema", title);
+                                else {
+                                    this.temas_usados.remove(tema);
+                                    this.modelo_temas.remove(fila);
+                                }
+                            }
+                        } else {
+                            this.temas_usados.remove(tema);
+                            this.modelo_temas.remove(fila);
+                        }
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_listTemasMouseClicked
+
+    private void txtIsbnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIsbnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIsbnActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        if (this.libro.eliminar()) {
+            Mensaje.Informacion("Se ha eliminado el libro corectamente", title);
+            this.dispose();
+        } else
+            Mensaje.Error("No se ha podido eliminar el libro", title);
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    @Override
+    public void dispose() {
+        super.dispose(); //To change body of generated methods, choose Tools | Templates.
+        if(this.btnEliminar.isVisible())
+            Sistema.cancelarExistenciaFrmNuevoLibro();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAccion;
+    private javax.swing.JButton btnAddNota;
+    private javax.swing.JButton btnAddTema;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLimpiar;
-    private javax.swing.JButton btnNuevaNota;
-    private javax.swing.JComboBox<String> cmbAutor;
-    private javax.swing.JComboBox<String> cmbCategoria;
+    private javax.swing.JComboBox cmbAutor;
+    private javax.swing.JComboBox cmbCategoria;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblAutor;
     private javax.swing.JLabel lblCategoria;
     private javax.swing.JLabel lblDescripcion;
     private javax.swing.JLabel lblEdcion;
     private javax.swing.JLabel lblErrorEdicion;
     private javax.swing.JLabel lblErrorImprenta;
+    private javax.swing.JLabel lblErrorIsbn;
     private javax.swing.JLabel lblErrorTitulo;
     private javax.swing.JLabel lblImg;
     private javax.swing.JLabel lblImprenta;
+    private javax.swing.JLabel lblIsbn;
     private javax.swing.JLabel lblNotas;
+    private javax.swing.JLabel lblTemas;
     private javax.swing.JLabel lblTitulo;
-    private javax.swing.JList<String> lisNotas;
+    private javax.swing.JList<String> listNotas;
+    private javax.swing.JList<String> listTemas;
     private javax.swing.JPanel pnlDatos;
     private javax.swing.JPanel pnlOpciones;
     private javax.swing.JTextPane txtDescripcion;
     private javax.swing.JTextField txtEdicion;
     private javax.swing.JTextField txtImprenta;
+    private javax.swing.JTextField txtIsbn;
     private javax.swing.JTextField txtTitulo;
     // End of variables declaration//GEN-END:variables
 }
