@@ -242,19 +242,19 @@ public class Libros extends Conexion implements Modelador {
     public boolean guardar() {
         this.conectar();
         
-        this.crearQuery("INSERT INTO libro (Id_Autor, ID_cat, ID_IMG, Titulo, Edicion, Imprenta, Descripcion, ISBN) values (?, ?, ?, ?, ?, ?, ?, ?)");
+        this.crearQuery("INSERT INTO libro (Id_Autor, ID_cat, Titulo, Edicion, Imprenta, Descripcion, ISBN) values (?, ?, ?, ?, ?, ?, ?, ?)");
         
         if (this.autor != null)
             this.agregarParametro(1, this.autor.getId());
         else
             this.agregarParametroNull(1);
         this.agregarParametro(2, this.categoria.getId());
-        this.agregarParametroNull(3);
-        this.agregarParametro(4, this.titulo);
-        this.agregarParametro(5, this.edicion);
-        this.agregarParametro(6, this.imprenta);
-        this.agregarParametro(7, this.descripcion);
-        this.agregarParametro(8, this.isbn);
+        
+        this.agregarParametro(3, this.titulo);
+        this.agregarParametro(4, this.edicion);
+        this.agregarParametro(5, this.imprenta);
+        this.agregarParametro(6, this.descripcion);
+        this.agregarParametro(7, this.isbn);
         
         boolean repuesta = this.ejecutarQuery() > 0;
         
@@ -282,7 +282,7 @@ public class Libros extends Conexion implements Modelador {
     public boolean actualizar() {
         this.conectar();
         
-        this.crearQuery("UPDATE libro SET Id_Autor = ?, ID_cat = ?, ID_IMG = ?, Titulo = ?, Edicion = ?, Imprenta = ?, Descripcion = ?, ISBN = ? WHERE ID_Libro = ?");
+        this.crearQuery("UPDATE libro SET Id_Autor = ?, ID_cat = ?, Titulo = ?, Edicion = ?, Imprenta = ?, Descripcion = ?, ISBN = ? WHERE ID_Libro = ?");
         
         if (this.autor != null)
             this.agregarParametro(1, this.autor.getId());
@@ -290,14 +290,14 @@ public class Libros extends Conexion implements Modelador {
             this.agregarParametroNull(1);
         
         this.agregarParametro(2, this.categoria.getId());
-        this.agregarParametroNull(3);
-        this.agregarParametro(4, this.titulo);
-        this.agregarParametro(5, this.edicion);
-        this.agregarParametro(6, this.imprenta);
-        this.agregarParametro(7, this.descripcion);
-        this.agregarParametro(8, this.isbn);
         
-        this.agregarParametro(9, this.id);
+        this.agregarParametro(3, this.titulo);
+        this.agregarParametro(4, this.edicion);
+        this.agregarParametro(5, this.imprenta);
+        this.agregarParametro(6, this.descripcion);
+        this.agregarParametro(7, this.isbn);
+        
+        this.agregarParametro(8, this.id);
         
         boolean repuesta = this.ejecutarQuery() > 0;
         
